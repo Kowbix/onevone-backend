@@ -13,7 +13,6 @@ import java.util.UUID;
 public abstract class Game {
 
     @Id
-    @GeneratedValue
     private String gameId;
     private String player1;
     private String player2;
