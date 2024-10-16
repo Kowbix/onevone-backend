@@ -7,6 +7,8 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ConnectedUserService {
@@ -31,6 +33,10 @@ public class ConnectedUserService {
         connectedUserRepository.delete(user);
         user.setStatus(ConnectedUserStatus.OFFLINE);
         return user;
+    }
+
+    public List<ConnectedUser> getAllConnectedUsers() {
+        return connectedUserRepository.findAll();
     }
 
     public boolean isUsernameAvailable(String username) {

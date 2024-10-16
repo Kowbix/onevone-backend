@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
@@ -41,6 +43,11 @@ public class ConnectedUserController {
             ) {
             boolean available = connectedUserService.isUsernameAvailable(username);
             return ResponseEntity.ok(available);
+    }
+
+    @GetMapping("/connected-users")
+    public ResponseEntity<List<ConnectedUser>> getConnectedUsers() {
+        return ResponseEntity.ok(connectedUserService.getAllConnectedUsers());
     }
 
 }
