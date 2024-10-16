@@ -1,11 +1,11 @@
 package com.kkowbel.oneVone.user;
 
-import com.kkowbel.oneVone.exception.UsernameAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,10 +21,18 @@ public class ConnectedUserController {
     @MessageMapping("/user.connectUser")
     @SendTo("/topic/public")
     public ConnectedUser connectUser(
+            @Payload String username,
+            SimpMessageHeaderAccessor headerAccessor
+    ) {
+        return connectedUserService.registerUser(username, headerAccessor);
+    }
+
+    @MessageMapping("/user.disconnectUser")
+    @SendTo("/topic/public")
+    public ConnectedUser disconnectUser(
             @Payload String username
     ) {
-        ConnectedUser connectedUser = connectedUserService.registerUser(username);
-        return connectedUser;
+        return connectedUserService.disconnect(username);
     }
 
     @GetMapping("/check-username/{username}")

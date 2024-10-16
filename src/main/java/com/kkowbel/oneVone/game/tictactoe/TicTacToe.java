@@ -1,4 +1,4 @@
-package com.kkowbel.oneVone.tictactoe;
+package com.kkowbel.oneVone.game.tictactoe;
 
 import com.kkowbel.oneVone.game.Game;
 import jakarta.persistence.Entity;

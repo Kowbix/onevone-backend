@@ -1,4 +1,4 @@
-package com.kkowbel.oneVone.tictactoe;
+package com.kkowbel.oneVone.game.tictactoe;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

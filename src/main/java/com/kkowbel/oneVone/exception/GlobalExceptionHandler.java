@@ -11,4 +11,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> usernameAlreadyExists(UsernameAlreadyExistsException e) {
         return ResponseEntity.status(409).body(e.getMessage());
     }
+
+    @ExceptionHandler(UsernameDontExistsException.class)
+    public ResponseEntity<String> usernameDontExists(UsernameDontExistsException e) {
+        return ResponseEntity.status(404).body(e.getMessage());
+    }
 }
