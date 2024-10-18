@@ -1,20 +1,15 @@
 package com.kkowbel.oneVone.game.tictactoe;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.kkowbel.oneVone.game.GameStatus;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-public class TicTacToeService {
+interface TicTacToeService {
 
-    private final TicTacToeRepository repository;
-
-    private final Map<String, TicTacToe> activeGames = new HashMap<>();
-
-
-
+    TicTacToe createGame(String player1);
+    TicTacToe joinGame(String gameId, String player2);
+    TicTacToe playTurn(TicTacToeGameMove move);
+    TicTacToe leaveGame(String player);
+    List<TicTacToe> getGamesByStatus(GameStatus status);
 
 }

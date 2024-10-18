@@ -6,21 +6,36 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.json.JSONObject;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TicTacToe extends Game {
+class TicTacToe extends Game {
 
+    private final String gameName = "tictactoe";
     private String turn;
     private String[][] board;
 
-    public TicTacToe(String player1, String player2) {
-        super(player1, player2);
+    public TicTacToe(String player1) {
+        super(player1);
         this.turn = player1;
         this.board = initNewBoard();
+    }
+
+    protected JSONObject toJson(JSONObject object) {
+        object.put("gameName", getGameName());
+        object.put("gameId", getGameId());
+        object.put("player1", getPlayer1());
+        object.put("player2", getPlayer2());
+        object.put("winner", getWinner());
+        object.put("gameDate", getGameDate());
+        object.put("status", getStatus());
+        object.put("turn", getTurn());
+        object.put("board", getBoard());
+        return object;
     }
 
     private String[][] initNewBoard() {
@@ -32,4 +47,6 @@ public class TicTacToe extends Game {
         }
         return newBoard;
     }
+
+
 }

@@ -16,4 +16,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> usernameDontExists(UsernameDontExistsException e) {
         return ResponseEntity.status(404).body(e.getMessage());
     }
+
+    @ExceptionHandler(SessionExceptions.class)
+    public ResponseEntity<String> sessionExceptions(SessionExceptions e) {
+        return ResponseEntity.status(500).body(e.getMessage());
+    }
 }
