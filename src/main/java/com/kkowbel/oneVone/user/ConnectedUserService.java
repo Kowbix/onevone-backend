@@ -1,8 +1,10 @@
 package com.kkowbel.oneVone.user;
 
+import com.kkowbel.oneVone.application.SessionService;
 import com.kkowbel.oneVone.exception.UsernameAlreadyExistsException;
 import com.kkowbel.oneVone.exception.UsernameDontExistsException;
 import com.kkowbel.oneVone.websocket.WebSocketManager;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,9 @@ public class ConnectedUserService {
 
     private final ConnectedUserRepository connectedUserRepository;
     private final WebSocketManager webSocketManager;
+    private final SessionService sessionService;
     private final Map<String, ConnectedUser> connectedUsers = new HashMap<>();
+
 
     ConnectedUser registerUser(String username, SimpMessageHeaderAccessor headerAccessor) {
         if (!isUsernameAvailable(username)) {
@@ -29,6 +33,17 @@ public class ConnectedUserService {
         ConnectedUser connectedUser = new ConnectedUser(username);
         connectedUsers.put(username, connectedUser);
         return connectedUser;
+    }
+
+    public void connectUser(String username, HttpSession session) {
+        if (!isUsernameAvailable(username)) {
+            throw new UsernameAlreadyExistsException("Username '" + username + "' already exists");
+        }
+        connectedUserRepository.save(new ConnectedUser(username));
+        ConnectedUser connectedUser = new ConnectedUser(username);
+        connectedUsers.put(username, connectedUser);
+        sessionService.addUsernameToHttpSession(username,connectedUser.getUserId(), session);
+        webSocketManager.sendConnectedUserToSubscribers(connectedUser);
     }
 
     public ConnectedUser disconnect(String username) {
@@ -51,5 +66,6 @@ public class ConnectedUserService {
         ConnectedUser connectedUser = connectedUserRepository.findConnectedUserByUsername(username).orElse(null);
         return connectedUser == null;
     }
+
 
 }

@@ -1,14 +1,9 @@
 package com.kkowbel.oneVone.user;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,21 +13,13 @@ public class ConnectedUserController {
 
     private final ConnectedUserService connectedUserService;
 
-    @MessageMapping("/user.connectUser")
-    @SendTo("/topic/public")
-    public ConnectedUser connectUser(
-            @Payload String username,
-            SimpMessageHeaderAccessor headerAccessor
+    @PostMapping("/connect-user/{username}")
+    public ResponseEntity<?> connectUser(
+            @PathVariable String username,
+            HttpSession session
     ) {
-        return connectedUserService.registerUser(username, headerAccessor);
-    }
-
-    @MessageMapping("/user.disconnectUser")
-    @SendTo("/topic/public")
-    public ConnectedUser disconnectUser(
-            @Payload String username
-    ) {
-        return connectedUserService.disconnect(username);
+        connectedUserService.connectUser(username, session);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/check-username/{username}")
@@ -47,5 +34,6 @@ public class ConnectedUserController {
     public ResponseEntity<List<ConnectedUser>> getConnectedUsers() {
         return ResponseEntity.ok(connectedUserService.getAllConnectedUsers());
     }
+
 
 }

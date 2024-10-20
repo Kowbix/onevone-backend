@@ -18,7 +18,7 @@ public class TicTacToeController {
     public TicTacToe createGame(
     ) {
 
-        return ticTacToeService.createGame(username);
+        return ticTacToeService.createGame("");
     }
 
 

@@ -28,12 +28,15 @@ public class WebSocketManager {
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-
         String username = (String) headerAccessor.getSessionAttributes().get("username");
         if (username != null) {
             ConnectedUser user = connectedUserService.disconnect(username);
-            messagingTemplate.convertAndSend("/topic/public", user);
+            sendConnectedUserToSubscribers(user);
         }
+    }
+
+    public void sendConnectedUserToSubscribers(ConnectedUser user) {
+        messagingTemplate.convertAndSend("/topic/users", user);
     }
 
     public void addUsernameToWebSocket(SimpMessageHeaderAccessor headerAccessor, String username) {
