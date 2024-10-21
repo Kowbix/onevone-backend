@@ -4,6 +4,7 @@ import com.kkowbel.oneVone.exception.UsernameDontExistsException;
 import com.kkowbel.oneVone.game.GameStatus;
 import com.kkowbel.oneVone.user.ConnectedUserService;
 import com.kkowbel.oneVone.websocket.WebSocketManager;
+import com.kkowbel.oneVone.websocket.WebSocketMessaging;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ class TicTacToeServiceImpl implements TicTacToeService {
 
     private final TicTacToeRepository repository;
     private final ConnectedUserService userService;
-    private final WebSocketManager webSocketManager;
+    private final WebSocketMessaging webSocketMessaging;
     private final Map<String, TicTacToe> activeGames = new HashMap<>();
 
     @Override
@@ -27,11 +28,10 @@ class TicTacToeServiceImpl implements TicTacToeService {
     public TicTacToe createGame(String player1) {
         if (userService.isUsernameAvailable(player1))
             throw new UsernameDontExistsException("Username '" + player1 + "' does not exist");
-
-
         TicTacToe newGame = new TicTacToe(player1);
+        activeGames.put(newGame.getGameId(), newGame);
         saveNewGame(newGame);
-        sendGameToPlayer(newGame, player1);
+//        sendGameToPlayer(newGame, player1);
         return newGame;
     }
 
@@ -51,8 +51,8 @@ class TicTacToeServiceImpl implements TicTacToeService {
     }
 
     @Override
-    public List<TicTacToe> getGamesByStatus(GameStatus status) {
-        return List.of();
+    public List<TicTacToe> getActiveGames() {
+        return repository.findAllByStatusNot(GameStatus.FINISHED);
     }
 
      private boolean isWin(TicTacToe game) {
@@ -66,7 +66,7 @@ class TicTacToeServiceImpl implements TicTacToeService {
 
     private void sendGameToPlayer(TicTacToe game, String player) {
         JSONObject jsonGame = game.toJson(new JSONObject());
-        webSocketManager.sendGameMessageToUser(jsonGame, player, game.getGameName());
+        webSocketMessaging.sendGameMessageToUser(jsonGame, player, game.getGameName());
     }
 
 }

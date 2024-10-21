@@ -10,6 +10,6 @@ interface TicTacToeService {
     TicTacToe joinGame(String gameId, String player2);
     TicTacToe playTurn(TicTacToeGameMove move);
     TicTacToe leaveGame(String player);
-    List<TicTacToe> getGamesByStatus(GameStatus status);
+    List<TicTacToe> getActiveGames();
 
 }

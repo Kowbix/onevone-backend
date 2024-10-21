@@ -9,5 +9,6 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public void addUsernameToHttpSession(String username, String userId, HttpSession session) {
         session.setAttribute("username", username);
+        session.setAttribute("userId", userId);
     }
 }
