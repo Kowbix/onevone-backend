@@ -2,6 +2,7 @@ package com.kkowbel.oneVone.game.tictactoe;
 
 import com.kkowbel.oneVone.exception.UsernameDontExistsException;
 import com.kkowbel.oneVone.game.GameStatus;
+import com.kkowbel.oneVone.game.tictactoe.dto.TicTacToeDTO;
 import com.kkowbel.oneVone.user.ConnectedUserService;
 import com.kkowbel.oneVone.websocket.WebSocketManager;
 import com.kkowbel.oneVone.websocket.WebSocketMessaging;
@@ -31,7 +32,7 @@ class TicTacToeServiceImpl implements TicTacToeService {
         TicTacToe newGame = new TicTacToe(player1);
         activeGames.put(newGame.getGameId(), newGame);
         saveNewGame(newGame);
-//        sendGameToPlayer(newGame, player1);
+        sendGameToUsers(newGame);
         return newGame;
     }
 
@@ -51,11 +52,14 @@ class TicTacToeServiceImpl implements TicTacToeService {
     }
 
     @Override
-    public List<TicTacToe> getActiveGames() {
-        return repository.findAllByStatusNot(GameStatus.FINISHED);
+    public List<TicTacToeDTO> getActiveGames() {
+        List<TicTacToe> games = repository.findAllByStatusNot(GameStatus.FINISHED);
+        return games.stream()
+                .map(TicTacToeDTO::new)
+                .toList();
     }
 
-     private boolean isWin(TicTacToe game) {
+    private boolean isWin(TicTacToe game) {
         return false;
     }
 
@@ -64,9 +68,8 @@ class TicTacToeServiceImpl implements TicTacToeService {
         repository.save(game);
     }
 
-    private void sendGameToPlayer(TicTacToe game, String player) {
-        JSONObject jsonGame = game.toJson(new JSONObject());
-        webSocketMessaging.sendGameMessageToUser(jsonGame, player, game.getGameName());
+    private void sendGameToUsers(TicTacToe game) {
+        webSocketMessaging.sendMessageToActiveUsers(new TicTacToeDTO(game), "/games");
     }
 
 }

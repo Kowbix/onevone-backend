@@ -13,7 +13,7 @@ import org.json.JSONObject;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-class TicTacToe extends Game {
+public class TicTacToe extends Game {
 
     private final String gameName = "tictactoe";
     private String turn;
@@ -25,18 +25,18 @@ class TicTacToe extends Game {
         this.board = initNewBoard();
     }
 
-    protected JSONObject toJson(JSONObject object) {
-        object.put("gameName", getGameName());
-        object.put("gameId", getGameId());
-        object.put("player1", getPlayer1());
-        object.put("player2", getPlayer2());
-        object.put("winner", getWinner());
-        object.put("gameDate", getGameDate());
-        object.put("status", getStatus());
-        object.put("turn", getTurn());
-        object.put("board", getBoard());
-        return object;
-    }
+//    protected JSONObject toJson(JSONObject object) {
+//        object.put("gameName", getGameName());
+//        object.put("gameId", getGameId());
+//        object.put("player1", getPlayer1());
+//        object.put("player2", getPlayer2());
+//        object.put("winner", getWinner());
+//        object.put("gameDate", getGameDate());
+//        object.put("status", getStatus());
+//        object.put("turn", getTurn());
+//        object.put("board", getBoard());
+//        return object;
+//    }
 
     private String[][] initNewBoard() {
         String[][] newBoard = new String[3][3];

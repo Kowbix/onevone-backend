@@ -34,7 +34,7 @@ public class ConnectedUserService {
         ConnectedUser connectedUser = new ConnectedUser(username);
         connectedUsers.put(username, connectedUser);
         sessionService.addUsernameToHttpSession(username,connectedUser.getUserId(), session);
-        webSocketMessaging.sendConnectedUserToSubscribers(connectedUser);
+        sendUserToUsers(connectedUser);
     }
 
     public ConnectedUser disconnect(String username) {
@@ -48,7 +48,6 @@ public class ConnectedUserService {
     }
 
     List<ConnectedUser> getAllConnectedUsers() {
-//        return new ArrayList<>(connectedUsers.values());
         return connectedUserRepository.findAll();
     }
 
@@ -56,6 +55,10 @@ public class ConnectedUserService {
     public boolean isUsernameAvailable(String username) {
         ConnectedUser connectedUser = connectedUserRepository.findConnectedUserByUsername(username).orElse(null);
         return connectedUser == null;
+    }
+
+    private void sendUserToUsers(ConnectedUser user) {
+        webSocketMessaging.sendMessageToActiveUsers(user, "/users");
     }
 
 

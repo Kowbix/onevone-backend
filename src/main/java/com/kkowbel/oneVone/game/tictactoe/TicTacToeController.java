@@ -1,5 +1,6 @@
 package com.kkowbel.oneVone.game.tictactoe;
 
+import com.kkowbel.oneVone.game.tictactoe.dto.TicTacToeDTO;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class TicTacToeController {
     }
 
     @GetMapping("/tictactoe/active-games")
-    public List<TicTacToe> getGames() {
+    public List<TicTacToeDTO> getActiveGames() {
         return ticTacToeService.getActiveGames();
     }
 
