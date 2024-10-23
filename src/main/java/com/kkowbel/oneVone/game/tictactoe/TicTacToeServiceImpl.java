@@ -1,9 +1,11 @@
 package com.kkowbel.oneVone.game.tictactoe;
 
+import com.kkowbel.oneVone.exception.GameDontExistsException;
 import com.kkowbel.oneVone.exception.UsernameDontExistsException;
 import com.kkowbel.oneVone.game.GameStatus;
 import com.kkowbel.oneVone.game.tictactoe.dto.TicTacToeDTO;
 import com.kkowbel.oneVone.user.ConnectedUserService;
+import com.kkowbel.oneVone.user.ConnectedUserStatus;
 import com.kkowbel.oneVone.websocket.WebSocketManager;
 import com.kkowbel.oneVone.websocket.WebSocketMessaging;
 import lombok.RequiredArgsConstructor;
@@ -22,18 +24,23 @@ class TicTacToeServiceImpl implements TicTacToeService {
     private final TicTacToeRepository repository;
     private final ConnectedUserService userService;
     private final WebSocketMessaging webSocketMessaging;
-    private final Map<String, TicTacToe> activeGames = new HashMap<>();
 
     @Override
     @Transactional
-    public TicTacToe createGame(String player1) {
+    public String createGame(String player1) {
         if (userService.isUsernameAvailable(player1))
             throw new UsernameDontExistsException("Username '" + player1 + "' does not exist");
         TicTacToe newGame = new TicTacToe(player1);
-        activeGames.put(newGame.getGameId(), newGame);
         saveNewGame(newGame);
         sendGameToUsers(newGame);
-        return newGame;
+        userService.changeUserStatus(player1, ConnectedUserStatus.IN_GAME);
+        return newGame.getGameId();
+    }
+
+    @Override
+    public TicTacToe getActiveGameById(String id) {
+        return repository.findById(id)
+                .orElseThrow(()-> new GameDontExistsException("Game '" + id +"' does not exist"));
     }
 
     @Override
@@ -64,7 +71,6 @@ class TicTacToeServiceImpl implements TicTacToeService {
     }
 
     private void saveNewGame(TicTacToe game) {
-        activeGames.put(game.getGameId(), game);
         repository.save(game);
     }
 

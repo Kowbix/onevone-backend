@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.json.JSONObject;
+
 
 @Entity
 @Getter
@@ -25,18 +25,10 @@ public class TicTacToe extends Game {
         this.board = initNewBoard();
     }
 
-//    protected JSONObject toJson(JSONObject object) {
-//        object.put("gameName", getGameName());
-//        object.put("gameId", getGameId());
-//        object.put("player1", getPlayer1());
-//        object.put("player2", getPlayer2());
-//        object.put("winner", getWinner());
-//        object.put("gameDate", getGameDate());
-//        object.put("status", getStatus());
-//        object.put("turn", getTurn());
-//        object.put("board", getBoard());
-//        return object;
-//    }
+    @Override
+    public boolean checkWinner() {
+        return false;
+    }
 
     private String[][] initNewBoard() {
         String[][] newBoard = new String[3][3];

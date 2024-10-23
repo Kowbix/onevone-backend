@@ -7,7 +7,8 @@ import java.util.List;
 
 interface TicTacToeService {
 
-    TicTacToe createGame(String player1);
+    String createGame(String player1);
+    TicTacToe getActiveGameById(String id);
     TicTacToe joinGame(String gameId, String player2);
     TicTacToe playTurn(TicTacToeGameMove move);
     TicTacToe leaveGame(String player);

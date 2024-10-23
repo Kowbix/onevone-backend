@@ -35,4 +35,6 @@ public abstract class Game {
         this.gameDate = LocalDate.now();
         this.status = GameStatus.WAITING_FOR_PLAYER;
     }
+
+    public abstract boolean checkWinner();
 }
