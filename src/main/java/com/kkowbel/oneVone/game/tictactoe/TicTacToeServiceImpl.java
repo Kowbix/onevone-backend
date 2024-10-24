@@ -1,5 +1,6 @@
 package com.kkowbel.oneVone.game.tictactoe;
 
+import com.kkowbel.oneVone.exception.FullGameException;
 import com.kkowbel.oneVone.exception.GameDontExistsException;
 import com.kkowbel.oneVone.exception.UsernameDontExistsException;
 import com.kkowbel.oneVone.game.GameStatus;
@@ -44,8 +45,12 @@ class TicTacToeServiceImpl implements TicTacToeService {
     }
 
     @Override
-    public TicTacToe joinGame(String gameId, String player2) {
-        return null;
+    public void joinGame(String gameId, String player) {
+        TicTacToe game = getActiveGameById(gameId);
+        setPlayer(game, player);
+        game.setStatus(GameStatus.IN_PROGRESS);
+        repository.save(game);
+        sendGameUpdateToOpponent(game);
     }
 
     @Override
@@ -70,12 +75,27 @@ class TicTacToeServiceImpl implements TicTacToeService {
         return false;
     }
 
+    private void setPlayer(TicTacToe game, String player) {
+        if (game.getPlayer1() != null && game.getPlayer2() != null)
+            throw new FullGameException("Game: '" + game.getGameId() + "' is full");
+
+        if (game.getPlayer1() == null) game.setPlayer1(player);
+        else game.setPlayer2(player);
+
+    }
+
     private void saveNewGame(TicTacToe game) {
         repository.save(game);
     }
 
+    private void sendGameUpdateToOpponent(TicTacToe game) {
+        String messagePath = "/game/tictactoe/" + game.getGameId();
+        webSocketMessaging.sendMessageToActiveUsers(game, messagePath);
+        sendGameToUsers(game);
+    }
     private void sendGameToUsers(TicTacToe game) {
         webSocketMessaging.sendMessageToActiveUsers(new TicTacToeDTO(game), "/games");
     }
+
 
 }

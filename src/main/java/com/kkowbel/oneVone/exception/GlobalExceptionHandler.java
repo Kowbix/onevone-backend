@@ -26,4 +26,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> gameDontExistsException(GameDontExistsException  e) {
         return ResponseEntity.status(404).body(e.getMessage());
     }
+
+    @ExceptionHandler(FullGameException.class)
+    public ResponseEntity<String> fullGameException(FullGameException e) {
+        return ResponseEntity.status(409).body(e.getMessage());
+    }
 }
