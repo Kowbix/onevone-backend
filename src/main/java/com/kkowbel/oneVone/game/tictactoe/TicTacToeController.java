@@ -1,16 +1,10 @@
 package com.kkowbel.oneVone.game.tictactoe;
 
-import com.kkowbel.oneVone.game.tictactoe.dto.TicTacToeDTO;
+import com.kkowbel.oneVone.game.GameDTO;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,7 +24,7 @@ public class TicTacToeController {
     }
 
     @GetMapping("/active-games")
-    public List<TicTacToeDTO> getActiveGames() {
+    public List<GameDTO> getActiveGames() {
         return ticTacToeService.getActiveGames();
     }
 
@@ -38,7 +32,7 @@ public class TicTacToeController {
     public ResponseEntity<TicTacToe> getActiveGame(
             @PathVariable String gameId
     ) {
-        TicTacToe game = ticTacToeService.getActiveGameById(gameId);
+        TicTacToe game = ticTacToeService.getGameById(gameId);
         return ResponseEntity.ok(game);
     }
 
@@ -47,7 +41,16 @@ public class TicTacToeController {
             @PathVariable String gameId,
             HttpSession session
     ) {
-        ticTacToeService.joinGame(gameId, (String)session.getAttribute("username"));
+        ticTacToeService.joinToGame(gameId, (String)session.getAttribute("username"));
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/make-move")
+    public ResponseEntity<Void> makeMove(
+            @RequestBody TicTacToeMoveDTO move,
+            HttpSession session
+    ) {
+        ticTacToeService.playTurn(move, (String)session.getAttribute("username"));
         return ResponseEntity.ok().build();
     }
 

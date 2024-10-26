@@ -1,6 +1,7 @@
 package com.kkowbel.oneVone.game.tictactoe;
 
 import com.kkowbel.oneVone.game.Game;
+import com.kkowbel.oneVone.game.GameDTO;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,8 +27,18 @@ public class TicTacToe extends Game {
     }
 
     @Override
-    public boolean checkWinner() {
-        return false;
+    public GameDTO toDTO() {
+        return new GameDTO(
+                getGameId(),
+                getStatus(),
+                getPlayer1(),
+                getPlayer2()
+        );
+    }
+
+    @Override
+    public String getPlayingPath() {
+        return "/game/" + getGameName() + "/" + getGameId();
     }
 
     private String[][] initNewBoard() {
@@ -39,6 +50,4 @@ public class TicTacToe extends Game {
         }
         return newBoard;
     }
-
-
 }

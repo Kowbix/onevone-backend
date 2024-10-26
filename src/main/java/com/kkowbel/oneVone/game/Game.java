@@ -36,5 +36,9 @@ public abstract class Game {
         this.status = GameStatus.WAITING_FOR_PLAYER;
     }
 
-    public abstract boolean checkWinner();
+    public abstract String getGameName();
+
+    public abstract String getPlayingPath();
+
+    public abstract GameDTO toDTO();
 }
