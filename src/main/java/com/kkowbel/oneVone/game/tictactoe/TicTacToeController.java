@@ -23,11 +23,6 @@ public class TicTacToeController {
         return ResponseEntity.ok(newGameId);
     }
 
-    @GetMapping("/active-games")
-    public List<GameDTO> getActiveGames() {
-        return ticTacToeService.getActiveGames();
-    }
-
     @GetMapping("/active-game/{gameId}")
     public ResponseEntity<TicTacToe> getActiveGame(
             @PathVariable String gameId

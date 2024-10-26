@@ -30,6 +30,7 @@ public class TicTacToe extends Game {
     public GameDTO toDTO() {
         return new GameDTO(
                 getGameId(),
+                getGameName(),
                 getStatus(),
                 getPlayer1(),
                 getPlayer2()
