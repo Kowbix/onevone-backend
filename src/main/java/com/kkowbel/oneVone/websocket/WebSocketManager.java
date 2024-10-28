@@ -1,7 +1,7 @@
 package com.kkowbel.oneVone.websocket;
 
-import com.kkowbel.oneVone.user.ConnectedUser;
-import com.kkowbel.oneVone.user.ConnectedUserService;
+import com.kkowbel.oneVone.user.User;
+import com.kkowbel.oneVone.user.UserService;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
@@ -13,12 +13,12 @@ import java.util.Objects;
 public class WebSocketManager {
 
     private final WebSocketMessaging webSocketMessaging;
-    private final ConnectedUserService connectedUserService;
+    private final UserService userService;
 
     public WebSocketManager(WebSocketMessaging webSocketMessaging,
-                            ConnectedUserService connectedUserService) {
+                            UserService userService) {
         this.webSocketMessaging = webSocketMessaging;
-        this.connectedUserService = connectedUserService;
+        this.userService = userService;
     }
 
     @EventListener
@@ -27,7 +27,7 @@ public class WebSocketManager {
         String username = (String) Objects.requireNonNull(headerAccessor.getSessionAttributes()).get("username");
 
         if (username != null) {
-            ConnectedUser user = connectedUserService.disconnect(username);
+            User user = userService.disconnect(username);
             webSocketMessaging.sendMessageToActiveUsers(user, "/users");
         }
     }

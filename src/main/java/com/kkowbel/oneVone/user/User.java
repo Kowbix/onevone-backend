@@ -1,6 +1,5 @@
 package com.kkowbel.oneVone.user;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -18,7 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ConnectedUser {
+public class User {
 
     @Id
     private String userId;
@@ -27,12 +26,11 @@ public class ConnectedUser {
     private LocalDateTime connectedTime;
 
     @Enumerated(EnumType.STRING)
-    private ConnectedUserStatus status;
+    private UserStatus status;
 
-    public ConnectedUser(String username) {
+    public User(String username) {
         this.userId = UUID.randomUUID().toString();
         this.username = username;
         this.connectedTime = LocalDateTime.now();
-        this.status = ConnectedUserStatus.ONLINE;
     }
 }

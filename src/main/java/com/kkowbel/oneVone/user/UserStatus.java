@@ -1,6 +1,6 @@
 package com.kkowbel.oneVone.user;
 
-public enum ConnectedUserStatus {
+public enum UserStatus {
 
     ONLINE,
     IN_GAME,

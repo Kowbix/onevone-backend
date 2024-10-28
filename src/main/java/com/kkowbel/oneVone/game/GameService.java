@@ -8,4 +8,5 @@ public interface GameService<T> {
     T getGameById(String id);
     void joinToGame(String gameId, String player);
     List<GameDTO> getActiveGames();
+    void disconnectFromTheGame(String gameId, String username);
 }

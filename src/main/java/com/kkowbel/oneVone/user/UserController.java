@@ -9,16 +9,16 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class ConnectedUserController {
+public class UserController {
 
-    private final ConnectedUserService connectedUserService;
+    private final UserService userService;
 
     @PostMapping("/connect-user/{username}")
     public ResponseEntity<?> connectUser(
             @PathVariable String username,
             HttpSession session
     ) {
-        connectedUserService.connectUser(username, session);
+        userService.connectUser(username, session);
         return ResponseEntity.ok().build();
     }
 
@@ -26,13 +26,13 @@ public class ConnectedUserController {
     public ResponseEntity<Boolean> isUsernameAvailable(
             @PathVariable String username
             ) {
-            boolean available = connectedUserService.isUsernameAvailable(username);
+            boolean available = userService.isUsernameAvailable(username);
             return ResponseEntity.ok(available);
     }
 
     @GetMapping("/connected-users")
-    public ResponseEntity<List<ConnectedUser>> getConnectedUsers() {
-        return ResponseEntity.ok(connectedUserService.getAllConnectedUsers());
+    public ResponseEntity<List<User>> getConnectedUsers() {
+        return ResponseEntity.ok(userService.getAllConnectedUsers());
     }
 
 

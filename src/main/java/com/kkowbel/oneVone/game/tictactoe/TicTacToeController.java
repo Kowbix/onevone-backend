@@ -1,12 +1,9 @@
 package com.kkowbel.oneVone.game.tictactoe;
 
-import com.kkowbel.oneVone.game.GameDTO;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/tictactoe")
@@ -15,7 +12,7 @@ public class TicTacToeController {
 
     private final TicTacToeService ticTacToeService;
 
-    @GetMapping("/create")
+    @PostMapping("/create")
     public ResponseEntity<String> createGame(
             HttpSession session
     ) {
@@ -31,7 +28,7 @@ public class TicTacToeController {
         return ResponseEntity.ok(game);
     }
 
-    @GetMapping("/join-to-game/{gameId}")
+    @PostMapping("/join-to-game/{gameId}")
     public ResponseEntity<Void> joinToGame(
             @PathVariable String gameId,
             HttpSession session
@@ -49,5 +46,15 @@ public class TicTacToeController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/disconnect/{gameId}")
+    public ResponseEntity<Void> disconnect(
+            @PathVariable String gameId,
+            HttpSession session
+    ) {
+        System.out.println("GameId: " + gameId);
+        System.out.println("Username: " + session.getAttribute("username"));
+        ticTacToeService.disconnectFromTheGame(gameId, (String)session.getAttribute("username"));
+        return ResponseEntity.ok().build();
+    }
 
 }

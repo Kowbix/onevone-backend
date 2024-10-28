@@ -8,5 +8,4 @@ class TicTacToeMoveDTO {
     private String gameId;
     private int row;
     private int col;
-    private boolean isWin;
 }

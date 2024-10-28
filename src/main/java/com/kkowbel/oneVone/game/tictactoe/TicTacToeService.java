@@ -1,13 +1,13 @@
 package com.kkowbel.oneVone.game.tictactoe;
 
 import com.kkowbel.oneVone.exception.GameDontExistsException;
-import com.kkowbel.oneVone.exception.UsernameDontExistsException;
 import com.kkowbel.oneVone.game.GameDTO;
 import com.kkowbel.oneVone.game.GameMessagingService;
 import com.kkowbel.oneVone.game.GameService;
 import com.kkowbel.oneVone.game.GameStatus;
-import com.kkowbel.oneVone.user.ConnectedUserService;
-import com.kkowbel.oneVone.user.ConnectedUserStatus;
+import com.kkowbel.oneVone.user.User;
+import com.kkowbel.oneVone.user.UserService;
+import com.kkowbel.oneVone.user.UserStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +19,7 @@ import java.util.List;
 class TicTacToeService implements GameService<TicTacToe> {
 
     private final TicTacToeRepository repository;
-    private final ConnectedUserService userService;
+    private final UserService userService;
     private final TicTacToePlayerService playerService;
     private final GameMessagingService messagingService;
     private final TicTacToeLogic gameLogicService;
@@ -27,13 +27,11 @@ class TicTacToeService implements GameService<TicTacToe> {
 
     @Override
     @Transactional
-    public String createGame(String player1) {
-        if (userService.isUsernameAvailable(player1))
-            throw new UsernameDontExistsException("Username '" + player1 + "' does not exist");
-        TicTacToe newGame = new TicTacToe(player1);
+    public String createGame(String player) {
+        TicTacToe newGame = new TicTacToe(player);
         repository.save(newGame);
         messagingService.sendGameToUsers(newGame);
-        userService.changeUserStatus(player1, ConnectedUserStatus.IN_GAME);
+        userService.updateUserStatus(player, UserStatus.IN_GAME);
         return newGame.getGameId();
     }
 
@@ -46,18 +44,13 @@ class TicTacToeService implements GameService<TicTacToe> {
     @Override
     public void joinToGame(String gameId, String player) {
         TicTacToe game = getGameById(gameId);
-        playerService.setPlayer(game, player);
-        game.setStatus(GameStatus.IN_PROGRESS);
-        repository.save(game);
-        messagingService.sendGameUpdateToOpponent(game);
+        setPlayerAndStartGame(game, player);
     }
 
     public void playTurn(TicTacToeMoveDTO move, String username) {
         TicTacToe game = getGameById(move.getGameId());
         String playerMark = playerService.getPlayerMark(username, game);
-        gameLogicService.makeMove(game, move, playerMark);
-        repository.save(game);
-        messagingService.sendGameUpdateToOpponent(game);
+        performMove(game, move, playerMark);
     }
 
     @Override
@@ -66,6 +59,43 @@ class TicTacToeService implements GameService<TicTacToe> {
         return games.stream()
                 .map(TicTacToe::toDTO)
                 .toList();
+    }
+
+    @Override
+    public void disconnectFromTheGame(String gameId, String username) {
+        TicTacToe game = getGameById(gameId);
+        removePlayer(game, username);
+        disconnectGame(game);
+//        TODO: send message to opponent
+    }
+
+    private void disconnectGame(TicTacToe game) {
+        game.setStatus(GameStatus.FINISHED);
+        repository.save(game);
+        messagingService.sendGameToUsers(game);
+        messagingService.sendGameUpdateToOpponent(game);
+    }
+
+    private void removePlayer(TicTacToe game, String username) {
+        playerService.removeUserFromGame(game, username);
+        userService.updateUserStatus(username, UserStatus.ONLINE);
+    }
+
+    private void setPlayerAndStartGame(TicTacToe game, String player) {
+        userService.updateUserStatus(player, UserStatus.IN_GAME);
+        playerService.setPlayer(game, player);
+        game.setStatus(GameStatus.IN_PROGRESS);
+        repository.save(game);
+        messagingService.sendGameUpdateToOpponent(game);
+    }
+
+    private void performMove(TicTacToe game, TicTacToeMoveDTO move, String playerMark) {
+        gameLogicService.makeMove(game, move, playerMark);
+        repository.save(game);
+        messagingService.sendGameUpdateToOpponent(game);
+        if(game.getWinner() != null) {
+            messagingService.sendGameToUsers(game);
+        }
     }
 
 }
