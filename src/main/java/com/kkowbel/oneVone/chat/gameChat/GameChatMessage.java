@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-class GameChatMessage extends Message {
+public class GameChatMessage extends Message {
 
     private String gameId;
     private String gameName;
@@ -22,6 +22,8 @@ class GameChatMessage extends Message {
         this.gameName = gameName;
         this.type = type;
     }
+
+
 
     @Override
     public String getMessagePath() {

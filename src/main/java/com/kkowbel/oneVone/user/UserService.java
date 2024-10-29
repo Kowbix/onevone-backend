@@ -61,7 +61,7 @@ public class UserService {
     }
 
     private void notifyUsersAboutChange(User user) {
-        webSocketMessaging.sendMessageToActiveUsers(user, "/users");
+        webSocketMessaging.sendNotification(user, "/users");
     }
 
     private User getConnectedUser(String username) {

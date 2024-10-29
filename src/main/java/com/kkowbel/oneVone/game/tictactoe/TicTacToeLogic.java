@@ -1,6 +1,5 @@
 package com.kkowbel.oneVone.game.tictactoe;
 
-import com.kkowbel.oneVone.game.GameStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -47,7 +46,6 @@ class TicTacToeLogic {
     private void setAsWon(TicTacToe game) {
         game.setWinner(game.getTurn());
         game.setTurn("");
-        game.setStatus(GameStatus.FINISHED);
     }
 
     private boolean checkRows(String[][] board, String playerMark) {

@@ -28,7 +28,7 @@ public class WebSocketManager {
 
         if (username != null) {
             User user = userService.disconnect(username);
-            webSocketMessaging.sendMessageToActiveUsers(user, "/users");
+            webSocketMessaging.sendNotification(user, "/users");
         }
     }
 

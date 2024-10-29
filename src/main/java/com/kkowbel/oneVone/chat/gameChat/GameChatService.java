@@ -1,6 +1,5 @@
 package com.kkowbel.oneVone.chat.gameChat;
 
-import com.kkowbel.oneVone.game.GameService;
 import com.kkowbel.oneVone.websocket.WebSocketMessaging;
 import org.springframework.stereotype.Service;
 
@@ -8,11 +7,9 @@ import org.springframework.stereotype.Service;
 public class GameChatService {
 
     private final WebSocketMessaging webSocketMessaging;
-    private final GameService gameService;
 
-    public GameChatService(WebSocketMessaging webSocketMessaging, GameService gameService) {
+    public GameChatService(WebSocketMessaging webSocketMessaging) {
         this.webSocketMessaging = webSocketMessaging;
-        this.gameService = gameService;
     }
 
     public void sendUserMessage(GameChatMessageRequestDTO dto) {
@@ -20,8 +17,13 @@ public class GameChatService {
                 dto, GameMessageType.USER_MESSAGE
         );
         String path = message.getMessagePath();
-        webSocketMessaging.sendMessageToActiveUsers(message, path);
-//        TODO: ADD controller + tictactoeService
+        webSocketMessaging.sendNotification(message, path);
+//        TODO: ADD controller
+    }
+
+    public void sendGameInfoMessage(GameChatMessage message) {
+        String path = message.getMessagePath();
+        webSocketMessaging.sendNotification(message, path);
     }
 
 

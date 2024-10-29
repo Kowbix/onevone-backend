@@ -2,16 +2,26 @@ package com.kkowbel.oneVone.game.tictactoe;
 
 import com.kkowbel.oneVone.exception.FullGameException;
 import com.kkowbel.oneVone.exception.UsernameDontExistsException;
+import com.kkowbel.oneVone.game.GameActionType;
+import com.kkowbel.oneVone.game.GameCommunicationService;
+import com.kkowbel.oneVone.user.UserService;
+import com.kkowbel.oneVone.user.UserStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
 class TicTacToePlayerService {
 
-    void setPlayer(TicTacToe game, String player) {
+    private final UserService userService;
+    private final GameCommunicationService communicationService;
+
+    void addPlayerToGame(TicTacToe game, String player) {
         validateGameNotFull(game);
         assignPlayerToGame(game, player);
+        sendUserGameNotification(player, game, GameActionType.JOIN);
     }
 
     String getPlayerMark(String username, TicTacToe game) {
@@ -23,6 +33,7 @@ class TicTacToePlayerService {
         validatePlayerInGame(player, game);
         if (Objects.equals(game.getPlayer1(), player)) game.setPlayer1(null);
         else if (Objects.equals(game.getPlayer2(), player)) game.setPlayer2(null);
+        updateUserStatusAndNotify(player, game, GameActionType.LEAVE);
     }
 
     private void validatePlayerInGame(String username, TicTacToe game) {
@@ -44,8 +55,22 @@ class TicTacToePlayerService {
         } else {
             game.setPlayer2(player);
         }
+        userService.updateUserStatus(player, UserStatus.IN_GAME);
     }
 
+    private void sendUserGameNotification(String player, TicTacToe game, GameActionType action) {
+        communicationService.sendUserInfoToGameChat(
+                player,
+                game.getGameId(),
+                game.getGameName(),
+                action
+        );
+    }
+
+    private void updateUserStatusAndNotify(String player, TicTacToe game, GameActionType action) {
+        userService.updateUserStatus(player, UserStatus.ONLINE);
+        sendUserGameNotification(player, game, action);
+    }
 
 
 }

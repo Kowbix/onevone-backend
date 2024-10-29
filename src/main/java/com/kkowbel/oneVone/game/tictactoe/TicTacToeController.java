@@ -51,8 +51,6 @@ public class TicTacToeController {
             @PathVariable String gameId,
             HttpSession session
     ) {
-        System.out.println("GameId: " + gameId);
-        System.out.println("Username: " + session.getAttribute("username"));
         ticTacToeService.disconnectFromTheGame(gameId, (String)session.getAttribute("username"));
         return ResponseEntity.ok().build();
     }

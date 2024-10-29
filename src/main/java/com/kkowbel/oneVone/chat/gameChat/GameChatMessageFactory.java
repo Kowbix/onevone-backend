@@ -1,6 +1,6 @@
 package com.kkowbel.oneVone.chat.gameChat;
 
-public class GameChatMessageFactory {
+class GameChatMessageFactory {
 
     public static GameChatMessage createGameChatMessage(GameChatMessageRequestDTO dto, GameMessageType type) {
         return new GameChatMessage(

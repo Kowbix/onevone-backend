@@ -2,10 +2,9 @@ package com.kkowbel.oneVone.game.tictactoe;
 
 import com.kkowbel.oneVone.exception.GameDontExistsException;
 import com.kkowbel.oneVone.game.GameDTO;
-import com.kkowbel.oneVone.game.GameMessagingService;
+import com.kkowbel.oneVone.game.GameCommunicationService;
 import com.kkowbel.oneVone.game.GameService;
 import com.kkowbel.oneVone.game.GameStatus;
-import com.kkowbel.oneVone.user.User;
 import com.kkowbel.oneVone.user.UserService;
 import com.kkowbel.oneVone.user.UserStatus;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +20,9 @@ class TicTacToeService implements GameService<TicTacToe> {
     private final TicTacToeRepository repository;
     private final UserService userService;
     private final TicTacToePlayerService playerService;
-    private final GameMessagingService messagingService;
+    private final GameCommunicationService communicationService;
     private final TicTacToeLogic gameLogicService;
+
 
 
     @Override
@@ -30,7 +30,7 @@ class TicTacToeService implements GameService<TicTacToe> {
     public String createGame(String player) {
         TicTacToe newGame = new TicTacToe(player);
         repository.save(newGame);
-        messagingService.sendGameToUsers(newGame);
+        communicationService.sendGameToUsers(newGame);
         userService.updateUserStatus(player, UserStatus.IN_GAME);
         return newGame.getGameId();
     }
@@ -42,9 +42,10 @@ class TicTacToeService implements GameService<TicTacToe> {
     }
 
     @Override
+    @Transactional
     public void joinToGame(String gameId, String player) {
         TicTacToe game = getGameById(gameId);
-        setPlayerAndStartGame(game, player);
+        addPlayer(game, player);
     }
 
     public void playTurn(TicTacToeMoveDTO move, String username) {
@@ -64,38 +65,38 @@ class TicTacToeService implements GameService<TicTacToe> {
     @Override
     public void disconnectFromTheGame(String gameId, String username) {
         TicTacToe game = getGameById(gameId);
-        removePlayer(game, username);
-        disconnectGame(game);
-//        TODO: send message to opponent
-    }
-
-    private void disconnectGame(TicTacToe game) {
-        game.setStatus(GameStatus.FINISHED);
-        repository.save(game);
-        messagingService.sendGameToUsers(game);
-        messagingService.sendGameUpdateToOpponent(game);
-    }
-
-    private void removePlayer(TicTacToe game, String username) {
         playerService.removeUserFromGame(game, username);
-        userService.updateUserStatus(username, UserStatus.ONLINE);
-    }
+        endGame(game);
 
-    private void setPlayerAndStartGame(TicTacToe game, String player) {
-        userService.updateUserStatus(player, UserStatus.IN_GAME);
-        playerService.setPlayer(game, player);
-        game.setStatus(GameStatus.IN_PROGRESS);
-        repository.save(game);
-        messagingService.sendGameUpdateToOpponent(game);
     }
 
     private void performMove(TicTacToe game, TicTacToeMoveDTO move, String playerMark) {
         gameLogicService.makeMove(game, move, playerMark);
+        if(game.getWinner() != null) endGame(game);
+        else updateGameStatusAfterMove(game);
+    }
+
+    private void endGame(TicTacToe game) {
+        game.setStatus(GameStatus.FINISHED);
         repository.save(game);
-        messagingService.sendGameUpdateToOpponent(game);
-        if(game.getWinner() != null) {
-            messagingService.sendGameToUsers(game);
-        }
+        sendGameUpdate(game);
+    }
+
+    private void addPlayer(TicTacToe game, String username) {
+        playerService.addPlayerToGame(game, username);
+        game.setStatus(GameStatus.IN_PROGRESS);
+        repository.save(game);
+        sendGameUpdate(game);
+    }
+
+    private void sendGameUpdate(TicTacToe game) {
+        communicationService.sendGameUpdateToOpponent(game);
+        communicationService.sendGameToUsers(game);
+    }
+
+    private void updateGameStatusAfterMove(TicTacToe game) {
+        repository.save(game);
+        communicationService.sendGameUpdateToOpponent(game);
     }
 
 }

@@ -13,7 +13,7 @@ public class WebSocketMessaging {
         this.messagingTemplate = messagingTemplate;
     }
 
-    public void sendMessageToActiveUsers(Object object, String path) {
+    public void sendNotification(Object object, String path) {
         messagingTemplate.convertAndSend("/topic" + path, object);
     }
 

@@ -1,8 +1,13 @@
 package com.kkowbel.oneVone.chat;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+@Getter
+@Setter
 public abstract class Message {
 
     private String message;
