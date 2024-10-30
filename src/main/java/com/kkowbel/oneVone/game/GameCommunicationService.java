@@ -25,8 +25,8 @@ public class GameCommunicationService {
 
 
     public void sendUserInfoToGameChat(String player, String gameId, String gameName, GameActionType actionType) {
-        String gameMessage = player + actionType.getActionMessage();
-        gameChatService.sendGameInfoMessage(new GameChatMessage(
+        String gameMessage = actionType.getActionMessage();
+        gameChatService.sendMessage(new GameChatMessage(
                 gameMessage,
                 player,
                 gameId,

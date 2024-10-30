@@ -1,27 +1,24 @@
 package com.kkowbel.oneVone.chat.gameChat;
 
 import com.kkowbel.oneVone.websocket.WebSocketMessaging;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class GameChatService {
 
     private final WebSocketMessaging webSocketMessaging;
 
-    public GameChatService(WebSocketMessaging webSocketMessaging) {
-        this.webSocketMessaging = webSocketMessaging;
-    }
-
-    public void sendUserMessage(GameChatMessageRequestDTO dto) {
+    public void sendMessage(GameChatMessageRequestDTO dto, String sender) {
         GameChatMessage message = GameChatMessageFactory.createGameChatMessage(
-                dto, GameMessageType.USER_MESSAGE
+                dto, GameMessageType.USER_MESSAGE, sender
         );
-        String path = message.getMessagePath();
-        webSocketMessaging.sendNotification(message, path);
-//        TODO: ADD controller
+        sendMessage(message);
     }
 
-    public void sendGameInfoMessage(GameChatMessage message) {
+
+    public void sendMessage(GameChatMessage message) {
         String path = message.getMessagePath();
         webSocketMessaging.sendNotification(message, path);
     }
