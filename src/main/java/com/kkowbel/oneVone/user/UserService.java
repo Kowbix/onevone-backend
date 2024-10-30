@@ -26,6 +26,7 @@ public class UserService {
 
         User user = saveConnectedUser(username);
         sessionService.addUsernameToHttpSession(username, user.getUserId(), session);
+        notifyUsersAboutChange(user);
     }
 
     @Transactional
