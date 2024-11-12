@@ -36,16 +36,6 @@ class TicTacToePlayerService {
         updateUserStatusAndNotify(player, game, GameActionType.LEAVE);
     }
 
-    void sendUserGameNotification(String player, TicTacToe game, GameActionType action) {
-        communicationService.sendUserInfoToGameChat(
-                player,
-                game.getGameId(),
-                game.getGameName(),
-                action
-        );
-    }
-
-
     private void validatePlayerInGame(String username, TicTacToe game) {
         if (!username.equals(game.getPlayer1()) && !username.equals(game.getPlayer2())) {
             throw new UsernameDoesNotExistException(
@@ -73,5 +63,13 @@ class TicTacToePlayerService {
         sendUserGameNotification(player, game, action);
     }
 
+    private void sendUserGameNotification(String player, TicTacToe game, GameActionType action) {
+        communicationService.sendUserInfoToGameChat(
+                player,
+                game.getGameId(),
+                game.getGameName(),
+                action
+        );
+    }
 
 }
