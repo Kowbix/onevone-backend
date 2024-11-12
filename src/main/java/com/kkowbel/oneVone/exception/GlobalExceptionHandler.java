@@ -12,8 +12,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(409).body(e.getMessage());
     }
 
-    @ExceptionHandler(UsernameDontExistsException.class)
-    public ResponseEntity<String> usernameDontExists(UsernameDontExistsException e) {
+    @ExceptionHandler(UsernameDoesNotExistException.class)
+    public ResponseEntity<String> usernameDontExists(UsernameDoesNotExistException e) {
         return ResponseEntity.status(404).body(e.getMessage());
     }
 
@@ -22,8 +22,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(500).body(e.getMessage());
     }
 
-    @ExceptionHandler(GameDontExistsException.class)
-    public ResponseEntity<String> gameDontExistsException(GameDontExistsException  e) {
+    @ExceptionHandler(GameDoesNotExistsException.class)
+    public ResponseEntity<String> gameDontExistsException(GameDoesNotExistsException e) {
         return ResponseEntity.status(404).body(e.getMessage());
     }
 

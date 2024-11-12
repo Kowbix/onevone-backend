@@ -33,7 +33,7 @@ public class TicTacToeController {
             @PathVariable String gameId,
             HttpSession session
     ) {
-        ticTacToeService.joinToGame(gameId, (String)session.getAttribute("username"));
+        ticTacToeService.joinGame(gameId, (String)session.getAttribute("username"));
         return ResponseEntity.ok().build();
     }
 
@@ -51,7 +51,7 @@ public class TicTacToeController {
             @PathVariable String gameId,
             HttpSession session
     ) {
-        ticTacToeService.disconnectFromTheGame(gameId, (String)session.getAttribute("username"));
+        ticTacToeService.disconnectFromGame(gameId, (String)session.getAttribute("username"));
         return ResponseEntity.ok().build();
     }
 

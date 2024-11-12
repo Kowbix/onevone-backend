@@ -6,7 +6,7 @@ public interface GameService<T> {
 
     String createGame(String player1);
     T getGameById(String id);
-    void joinToGame(String gameId, String player);
+    void joinGame(String gameId, String player);
     List<GameDTO> getActiveGames();
-    void disconnectFromTheGame(String gameId, String username);
+    void disconnectFromGame(String gameId, String username);
 }

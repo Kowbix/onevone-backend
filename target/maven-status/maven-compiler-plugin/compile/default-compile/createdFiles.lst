@@ -3,7 +3,6 @@ com\kkowbel\oneVone\application\SessionService.class
 com\kkowbel\oneVone\exception\UsernameAlreadyExistsException.class
 com\kkowbel\oneVone\application\SessionServiceImpl.class
 com\kkowbel\oneVone\game\tictactoe\TicTacToeLogic.class
-com\kkowbel\oneVone\exception\GameDontExistsException.class
 com\kkowbel\oneVone\chat\gameChat\GameChatMessageRequestDTO.class
 com\kkowbel\oneVone\chat\gameChat\GameMessageType.class
 com\kkowbel\oneVone\websocket\WebSocketMessaging.class
@@ -36,6 +35,5 @@ com\kkowbel\oneVone\game\GameCommunicationService.class
 com\kkowbel\oneVone\exception\FullGameException.class
 com\kkowbel\oneVone\user\User.class
 com\kkowbel\oneVone\game\tictactoe\TicTacToePlayerService.class
-com\kkowbel\oneVone\exception\UsernameDontExistsException.class
 com\kkowbel\oneVone\application\WebConfig.class
 com\kkowbel\oneVone\user\UserStatus.class

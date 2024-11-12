@@ -2,7 +2,7 @@ package com.kkowbel.oneVone.user;
 
 import com.kkowbel.oneVone.application.SessionService;
 import com.kkowbel.oneVone.exception.UsernameAlreadyExistsException;
-import com.kkowbel.oneVone.exception.UsernameDontExistsException;
+import com.kkowbel.oneVone.exception.UsernameDoesNotExistException;
 import com.kkowbel.oneVone.websocket.WebSocketMessaging;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class UserService {
     @Transactional
     public User disconnect(String username) {
         User user = userRepository.findConnectedUserByUsername(username)
-                .orElseThrow(() -> new UsernameDontExistsException("Username '" + username + "' does not exist"));
+                .orElseThrow(() -> new UsernameDoesNotExistException("Username '" + username + "' does not exist"));
 
         userRepository.delete(user);
         user.setStatus(UserStatus.OFFLINE);
@@ -67,7 +67,7 @@ public class UserService {
 
     private User getConnectedUser(String username) {
         return userRepository.findConnectedUserByUsername(username)
-                .orElseThrow(() -> new UsernameDontExistsException("Username '" + username + "' does not exist"));
+                .orElseThrow(() -> new UsernameDoesNotExistException("Username '" + username + "' does not exist"));
     }
 
 

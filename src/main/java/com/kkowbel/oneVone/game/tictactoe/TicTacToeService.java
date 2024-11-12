@@ -1,16 +1,14 @@
 package com.kkowbel.oneVone.game.tictactoe;
 
-import com.kkowbel.oneVone.exception.GameDontExistsException;
-import com.kkowbel.oneVone.game.GameDTO;
-import com.kkowbel.oneVone.game.GameCommunicationService;
-import com.kkowbel.oneVone.game.GameService;
-import com.kkowbel.oneVone.game.GameStatus;
+import com.kkowbel.oneVone.exception.GameDoesNotExistsException;
+import com.kkowbel.oneVone.game.*;
 import com.kkowbel.oneVone.user.UserService;
 import com.kkowbel.oneVone.user.UserStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -38,53 +36,63 @@ class TicTacToeService implements GameService<TicTacToe> {
     @Override
     public TicTacToe getGameById(String id) {
         return repository.findById(id)
-                .orElseThrow(()-> new GameDontExistsException("Game '" + id +"' does not exist"));
+                .orElseThrow(()-> new GameDoesNotExistsException("Game '" + id +"' does not exist"));
     }
 
     @Override
     @Transactional
-    public void joinToGame(String gameId, String player) {
+    public void joinGame(String gameId, String player) {
         TicTacToe game = getGameById(gameId);
         addPlayer(game, player);
     }
 
-    public void playTurn(TicTacToeMoveDTO move, String username) {
+    @Transactional
+    public void playTurn(TicTacToeMoveDTO move, String player) {
         TicTacToe game = getGameById(move.getGameId());
-        String playerMark = playerService.getPlayerMark(username, game);
-        performMove(game, move, playerMark);
+        performMove(game, move, player);
     }
 
     @Override
     public List<GameDTO> getActiveGames() {
-        List<TicTacToe> games = repository.findAllByStatusNot(GameStatus.FINISHED);
+        List<TicTacToe> games = repository.findAllByStatuses(
+                Arrays.asList(
+                        GameStatus.IN_PROGRESS,
+                        GameStatus.WAITING_FOR_PLAYER
+                )
+        );
         return games.stream()
                 .map(TicTacToe::toDTO)
                 .toList();
     }
 
     @Override
-    public void disconnectFromTheGame(String gameId, String username) {
+    public void disconnectFromGame(String gameId, String player) {
         TicTacToe game = getGameById(gameId);
-        playerService.removeUserFromGame(game, username);
-        endGame(game);
-
+        abandonGame(game, player);
     }
 
-    private void performMove(TicTacToe game, TicTacToeMoveDTO move, String playerMark) {
-        gameLogicService.makeMove(game, move, playerMark);
-        if(game.getWinner() != null) endGame(game);
-        else updateGameStatusAfterMove(game);
-    }
-
-    private void endGame(TicTacToe game) {
-        game.setStatus(GameStatus.FINISHED);
-        repository.save(game);
-        sendGameUpdate(game);
-    }
-
-    private void addPlayer(TicTacToe game, String username) {
-        playerService.addPlayerToGame(game, username);
+    private void addPlayer(TicTacToe game, String player) {
+        playerService.addPlayerToGame(game, player);
         game.setStatus(GameStatus.IN_PROGRESS);
+        updateGame(game);
+    }
+
+    private void performMove(TicTacToe game, TicTacToeMoveDTO move, String player) {
+        String playerMark = playerService.getPlayerMark(player, game);
+        gameLogicService.makeMove(game, move, playerMark);
+        updateGame(game);
+    }
+
+    private void abandonGame(TicTacToe game, String player) {
+        if (game.getStatus() != GameStatus.WON &&
+                game.getStatus() != GameStatus.DRAW) {
+            playerService.removePlayerFromGame(game, player);
+            game.setStatus(GameStatus.ABANDONED);
+            updateGame(game);
+        }
+    }
+
+    private void updateGame(TicTacToe game) {
         repository.save(game);
         sendGameUpdate(game);
     }
@@ -93,10 +101,4 @@ class TicTacToeService implements GameService<TicTacToe> {
         communicationService.sendGameUpdateToOpponent(game);
         communicationService.sendGameToUsers(game);
     }
-
-    private void updateGameStatusAfterMove(TicTacToe game) {
-        repository.save(game);
-        communicationService.sendGameUpdateToOpponent(game);
-    }
-
 }

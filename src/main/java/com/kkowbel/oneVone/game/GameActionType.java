@@ -3,7 +3,8 @@ package com.kkowbel.oneVone.game;
 public enum GameActionType {
 
     JOIN("joined the game"),
-    LEAVE("left the game");
+    LEAVE("left the game"),
+    WIN("win the game");
 
     private final String actionMessage;
 

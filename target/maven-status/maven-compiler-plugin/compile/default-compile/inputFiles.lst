@@ -1,5 +1,6 @@
 C:\Users\kacpe\OneDrive\Desktop\oneVone\src\main\java\com\kkowbel\oneVone\game\GameController.java
 C:\Users\kacpe\OneDrive\Desktop\oneVone\src\main\java\com\kkowbel\oneVone\chat\gameChat\GameChatController.java
+C:\Users\kacpe\OneDrive\Desktop\oneVone\src\main\java\com\kkowbel\oneVone\exception\UsernameDoesNotExistException.java
 C:\Users\kacpe\OneDrive\Desktop\oneVone\src\main\java\com\kkowbel\oneVone\game\GameDTO.java
 C:\Users\kacpe\OneDrive\Desktop\oneVone\src\main\java\com\kkowbel\oneVone\game\GameActionType.java
 C:\Users\kacpe\OneDrive\Desktop\oneVone\src\main\java\com\kkowbel\oneVone\game\tictactoe\TicTacToeMoveDTO.java
@@ -16,8 +17,8 @@ C:\Users\kacpe\OneDrive\Desktop\oneVone\src\main\java\com\kkowbel\oneVone\user\U
 C:\Users\kacpe\OneDrive\Desktop\oneVone\src\main\java\com\kkowbel\oneVone\chat\gameChat\GameChatMessage.java
 C:\Users\kacpe\OneDrive\Desktop\oneVone\src\main\java\com\kkowbel\oneVone\chat\gameChat\GameChatMessageFactory.java
 C:\Users\kacpe\OneDrive\Desktop\oneVone\src\main\java\com\kkowbel\oneVone\chat\gameChat\GameChatService.java
-C:\Users\kacpe\OneDrive\Desktop\oneVone\src\main\java\com\kkowbel\oneVone\exception\GameDontExistsException.java
 C:\Users\kacpe\OneDrive\Desktop\oneVone\src\main\java\com\kkowbel\oneVone\game\GameCommunicationService.java
+C:\Users\kacpe\OneDrive\Desktop\oneVone\src\main\java\com\kkowbel\oneVone\game\tictactoe\PlayerMark.java
 C:\Users\kacpe\OneDrive\Desktop\oneVone\src\main\java\com\kkowbel\oneVone\game\tictactoe\TicTacToeController.java
 C:\Users\kacpe\OneDrive\Desktop\oneVone\src\main\java\com\kkowbel\oneVone\game\tictactoe\TicTacToeService.java
 C:\Users\kacpe\OneDrive\Desktop\oneVone\src\main\java\com\kkowbel\oneVone\application\SessionService.java
@@ -36,6 +37,6 @@ C:\Users\kacpe\OneDrive\Desktop\oneVone\src\main\java\com\kkowbel\oneVone\websoc
 C:\Users\kacpe\OneDrive\Desktop\oneVone\src\main\java\com\kkowbel\oneVone\game\tictactoe\TicTacToe.java
 C:\Users\kacpe\OneDrive\Desktop\oneVone\src\main\java\com\kkowbel\oneVone\application\WebConfig.java
 C:\Users\kacpe\OneDrive\Desktop\oneVone\src\main\java\com\kkowbel\oneVone\user\UserRepository.java
-C:\Users\kacpe\OneDrive\Desktop\oneVone\src\main\java\com\kkowbel\oneVone\exception\UsernameDontExistsException.java
+C:\Users\kacpe\OneDrive\Desktop\oneVone\src\main\java\com\kkowbel\oneVone\exception\GameDoesNotExistsException.java
 C:\Users\kacpe\OneDrive\Desktop\oneVone\src\main\java\com\kkowbel\oneVone\chat\Message.java
 C:\Users\kacpe\OneDrive\Desktop\oneVone\src\main\java\com\kkowbel\oneVone\user\UserService.java
